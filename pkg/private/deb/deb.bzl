@@ -137,6 +137,13 @@ def _pkg_deb_impl(ctx):
     if ctx.attr.license:
         args.append("--license=" + ctx.attr.license)
 
+    if ctx.attr.vcs_git:
+        args.append("--vcs-git=" + ctx.attr.vcs_git)
+    if ctx.attr.user_defined_fields:
+        args += ["--user-defined-field=" + udf for udf in ctx.attr.user_defined_fields]
+    if ctx.attr.vendor:
+        args.append("--vendor=" + ctx.attr.vendor)
+
     args.append("--distribution=" + ctx.attr.distribution)
     args.append("--urgency=" + ctx.attr.urgency)
     args += ["--suggests=" + d for d in ctx.attr.suggests]
@@ -343,6 +350,16 @@ See https://www.debian.org/doc/debian-policy/ch-files.html#s-config-files.""",
         "suggests": attr.string_list(
             doc = """See http://www.debian.org/doc/debian-policy/ch-relationships.html#s-binarydeps.""",
             default = [],
+        ),
+        "vcs_git": attr.string(
+            doc = """The version control system URL for the package.""",
+        ),
+        "user_defined_fields": attr.string_list(
+            doc = """User-defined fields for the package. Any field included here will be included in control with X- prefix.""",
+            default = [],
+        ),
+        "vendor": attr.string(
+            doc = """The vendor of the package.""",
         ),
 
         # Common attributes

@@ -78,6 +78,24 @@ class MakeControlFieldTest(unittest.TestCase):
         make_deb.MakeDebianControlField(
             'Description', 'fizz\n buzz\n baz', multiline=make_deb.Multiline.YES))
 
+  def test_vcs_git(self):
+    self.assertEqual(
+        'Vcs-Git: https://github.com/example/repo.git\n',
+        make_deb.MakeDebianControlField('Vcs-Git', 'https://github.com/example/repo.git'))
+
+  def test_vendor(self):
+    self.assertEqual(
+        'Vendor: ExampleVendor\n',
+        make_deb.MakeDebianControlField('Vendor', 'ExampleVendor'))
+
+  def test_user_defined_fields(self):
+    self.assertEqual(
+        'X-Field1: value1\n',
+        make_deb.MakeDebianControlField('X-Field1', 'value1'))
+    self.assertEqual(
+        'X-Field2: value2\n',
+        make_deb.MakeDebianControlField('X-Field2', 'value2'))
+
 
 if __name__ == '__main__':
   unittest.main()

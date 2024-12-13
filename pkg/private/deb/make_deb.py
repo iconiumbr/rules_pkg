@@ -59,6 +59,9 @@ DEBIAN_FIELDS = [
     ('Built-Using', False, False, None),
     ('Distribution', False, False, 'unstable'),
     ('Urgency', False, False, 'medium'),
+    ('Vcs-Git', False, False),
+    ('Vendor', False, False),
+    ('User-Defined-Fields', False, False, []),
 ]
 
 # size of chunks for copying package content to final .deb file
@@ -167,6 +170,11 @@ def CreateDebControl(extrafiles=None, **kwargs):
     key = fieldname[0].lower() + fieldname[1:].replace('-', '')
     if mandatory or (key in kwargs and kwargs[key]):
       controlfile += MakeDebianControlField(fieldname, kwargs[key], multiline)
+  # Handle user-defined fields
+  if 'userDefinedFields' in kwargs and kwargs['userDefinedFields']:
+    for field in kwargs['userDefinedFields']:
+      field_name, field_value = field.split('=', 1)
+      controlfile += MakeDebianControlField('X-' + field_name, field_value)
   # Create the control.tar file
   tar = io.BytesIO()
   with gzip.GzipFile('control.tar.gz', mode='w', fileobj=tar, mtime=0) as gz:
@@ -374,6 +382,9 @@ def main():
       '--changelog',
       help='The changelog file (prefix item with @ to provide a path).')
   AddControlFlags(parser)
+  parser.add_argument('--vcs-git', help='The version control system URL for the package.')
+  parser.add_argument('--vendor', help='The vendor of the package.')
+  parser.add_argument('--user-defined-field', action='append', help='User-defined fields for the package.')
   options = parser.parse_args()
 
   CreateDeb(
@@ -407,7 +418,10 @@ def main():
       priority=options.priority,
       conflicts=options.conflicts,
       breaks=options.breaks,
-      installedSize=helpers.GetFlagValue(options.installed_size))
+      installedSize=helpers.GetFlagValue(options.installed_size),
+      vcsGit=helpers.GetFlagValue(options.vcs_git),
+      vendor=helpers.GetFlagValue(options.vendor),
+      userDefinedFields=GetFlagValues(options.user_defined_field))
   CreateChanges(
       output=options.changes,
       deb_file=options.output,

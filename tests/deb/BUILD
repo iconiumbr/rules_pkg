@@ -88,6 +88,12 @@ pkg_deb(
     triggers = "deb_triggers",
     urgency = "low",
     version = "4.5.6",
+    vcs_git = "https://github.com/example/repo.git",
+    vendor = "ExampleVendor",
+    user_defined_fields = [
+        "Field1=value1",
+        "Field2=value2",
+    ],
 )
 
 py_test(
