@@ -80,6 +80,7 @@ pkg_deb(
     distribution = "trusty",
     license = "Apache-2.0",
     maintainer = "soméone@somewhere.com",
+    uploaders = "soméone@somewhere.com",
     package = "fizzbuzz",
     preinst = "deb_preinst",
     provides = ["hello"],
@@ -89,7 +90,6 @@ pkg_deb(
     urgency = "low",
     version = "4.5.6",
     vcs_git = "https://github.com/example/repo.git",
-    vendor = "ExampleVendor",
     user_defined_fields = [
         "Field1=value1",
         "Field2=value2",

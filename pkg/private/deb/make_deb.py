@@ -53,6 +53,7 @@ DEBIAN_FIELDS = [
     ('Provides', False, False, []),
     ('Installed-Size', False, False),
     ('Maintainer', True, False),
+    ('Uploaders', False, False),
     ('Description', True, True),
     ('Homepage', False, False),
     ('License', False, False),
@@ -168,7 +169,7 @@ def CreateDebControl(extrafiles=None, **kwargs):
     mandatory = values[1]
     multiline = Multiline.YES if values[2] else Multiline.NO
     key = fieldname[0].lower() + fieldname[1:].replace('-', '')
-    if mandatory or (key in kwargs and kwargs[key]):
+    if (mandatory or (key in kwargs and kwargs[key])) and fieldname != 'User-Defined-Fields':
       controlfile += MakeDebianControlField(fieldname, kwargs[key], multiline)
   # Handle user-defined fields
   if 'userDefinedFields' in kwargs and kwargs['userDefinedFields']:
@@ -383,7 +384,6 @@ def main():
       help='The changelog file (prefix item with @ to provide a path).')
   AddControlFlags(parser)
   parser.add_argument('--vcs-git', help='The version control system URL for the package.')
-  parser.add_argument('--vendor', help='The vendor of the package.')
   parser.add_argument('--user-defined-field', action='append', help='User-defined fields for the package.')
   options = parser.parse_args()
 
@@ -403,6 +403,7 @@ def main():
       version=helpers.GetFlagValue(options.version),
       description=helpers.GetFlagValue(options.description),
       maintainer=helpers.GetFlagValue(options.maintainer),
+      uploaders=helpers.GetFlagValue(options.uploaders),
       section=options.section,
       architecture=helpers.GetFlagValue(options.architecture),
       depends=GetFlagValues(options.depends),

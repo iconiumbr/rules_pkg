@@ -275,6 +275,18 @@ Checksums-Sha256:
 
       self.assertRegex(content, expect)
 
+  def test_additional_fields(self):
+    control = self.deb_file.get_deb_ctl_file('control')
+    fields = {
+        'Vcs-Git': 'https://github.com/example/repo.git',
+        'X-Field1': 'value1',
+        'X-Field2': 'value2',
+        'Uploaders': 'soméone@somewhere.com',
+    }
+    for key, value in fields.items():
+      field = f'{key}: {value}'
+      if control.find(field) < 0:
+        self.fail(f'Missing control field: <{field}> in <{control}>')
 
 if __name__ == '__main__':
   unittest.main()

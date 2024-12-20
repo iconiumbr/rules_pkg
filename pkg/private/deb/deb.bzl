@@ -45,6 +45,8 @@ def _pkg_deb_impl(ctx):
         "--package=" + ctx.attr.package,
         "--maintainer=" + ctx.attr.maintainer,
     ]
+    if ctx.attr.uploaders:
+        args.append("--uploaders=" + ctx.attr.uploaders)
 
     # Version and description can be specified by a file or inlined
     if ctx.attr.architecture_file:
@@ -136,7 +138,6 @@ def _pkg_deb_impl(ctx):
         args.append("--homepage=" + ctx.attr.homepage)
     if ctx.attr.license:
         args.append("--license=" + ctx.attr.license)
-
     if ctx.attr.vcs_git:
         args.append("--vcs-git=" + ctx.attr.vcs_git)
     if ctx.attr.user_defined_fields:
@@ -219,6 +220,9 @@ pkg_deb_impl = rule(
         "maintainer": attr.string(
             doc = "The maintainer of the package.",
             mandatory = True,
+        ),
+        "uploaders": attr.string(
+            doc = "The uploaders of the package.",
         ),
         "version": attr.string(
             doc = """Package version. Must not be used with `version_file`.""",
